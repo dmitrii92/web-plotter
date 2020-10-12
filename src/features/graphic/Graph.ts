@@ -105,7 +105,7 @@ export default class Graph {
       }
     });
 
-    this.scaleY = this.graphHeigth / 2 / maxY;
+    this.scaleY = this.scaleX;
 
     // draw
     this.ctx.beginPath();
@@ -130,7 +130,7 @@ export default class Graph {
 
     coordinates.map((value, index, elements) => {
       if (maxY === Math.abs(value.y)) {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
           if (elements[index + i]) {
             elements[index + i].y = undefined;
           }
