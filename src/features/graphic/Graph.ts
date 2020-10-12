@@ -99,7 +99,7 @@ export default class Graph {
     const newCoordinates = this._cutBreakpoint(coordinates, maxY);
 
     maxY = 0;
-    newCoordinates.map((value) => {
+    newCoordinates.forEach((value) => {
       if (value.y !== undefined) {
         maxY = Math.max(maxY, Math.abs(value.y));
       }
@@ -110,7 +110,7 @@ export default class Graph {
     // draw
     this.ctx.beginPath();
 
-    newCoordinates.map((value) => {
+    newCoordinates.forEach((value) => {
       if (value.y !== undefined) {
         const [canvasX, canvasY] = this._convertXY(value.x, value.y);
         this.ctx.lineTo(canvasX, canvasY);
@@ -128,18 +128,19 @@ export default class Graph {
   _cutBreakpoint(coordinates: Array<{ x: number; y: number }>, maxY): Array<{ x; y }> {
     const newCoordinates = coordinates.slice();
 
-    coordinates.map((value, index, elements) => {
-      if (maxY === Math.abs(value.y)) {
+    for (let index = 0; index < coordinates.length; index++) {
+      if (maxY === Math.abs(coordinates[index].y)) {
         for (let i = 0; i < 5; i++) {
-          if (elements[index + i]) {
-            elements[index + i].y = undefined;
+          if (coordinates[index + i]) {
+            coordinates[index + i].y = undefined;
           }
-          if (elements[index - i]) {
-            elements[index - i].y = undefined;
+          if (coordinates[index - i]) {
+            coordinates[index - i].y = undefined;
           }
         }
+        break;
       }
-    });
+    }
 
     return newCoordinates;
   }
