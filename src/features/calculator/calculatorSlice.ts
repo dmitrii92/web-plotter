@@ -9,8 +9,8 @@ interface CalculatorState {
 }
 
 const initialState: CalculatorState = {
-  expression: "",
-  min: 0,
+  expression: "x^2",
+  min: -10,
   max: 10,
   calcType: "custom",
 };

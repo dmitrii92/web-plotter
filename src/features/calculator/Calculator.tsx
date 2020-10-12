@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { calculate, changeCalculator, selectCalcType } from "./calculatorSlice";
+import { calculate, selectExpression, selectMax, selectMin } from "./calculatorSlice";
 import Button from "@material-ui/core/Button/Button";
 import TextField from "@material-ui/core/TextField";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -21,9 +21,12 @@ export function Calculator() {
   const classes = useStyles();
 
   const dispatch = useDispatch();
+  const expression = useSelector(selectExpression);
+  const min = useSelector(selectMin);
+  const max = useSelector(selectMax);
 
   const formik = useFormik<{ expression: string; min: number; max: number }>({
-    initialValues: { expression: "", min: 0, max: 10 },
+    initialValues: { expression: expression, min: min, max: max },
     onSubmit: (values) => {
       dispatch(calculate({ expression: values.expression, min: values.min, max: values.max }));
     },
