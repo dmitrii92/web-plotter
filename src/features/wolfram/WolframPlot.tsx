@@ -4,6 +4,7 @@ import { selectExpression, selectMax, selectMin } from "../calculator/calculator
 import { getGraph } from "./api/Wolfram";
 import { WolframResponeDto } from "./api/WolframResponse";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Alert from "@material-ui/lab/Alert";
 
 const WolframPlot = () => {
   const expression = useSelector(selectExpression);
@@ -11,18 +12,30 @@ const WolframPlot = () => {
   const max = useSelector(selectMax);
   const [wolframResult, setWolframResult] = useState<WolframResponeDto>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let cleanupFunction = false;
     if (expression) {
       setIsLoading(true);
+      setError("");
       setWolframResult(null);
-      getGraph(`${expression}, x = ${min} to ${max}`).then((result) => {
-        if (!cleanupFunction) {
+      getGraph(`${expression}, x = ${min} to ${max}`)
+        .then((result) => {
+          if (!cleanupFunction) {
+            setWolframResult(result);
+          }
+        })
+        .catch((reason) => {
+          if (reason.response) {
+            setError(reason.response.data);
+          } else {
+            setError(reason.message);
+          }
+        })
+        .finally(() => {
           setIsLoading(false);
-          setWolframResult(result);
-        }
-      });
+        });
     }
     return () => (cleanupFunction = true);
   }, [expression, min, max]);
@@ -30,6 +43,7 @@ const WolframPlot = () => {
   return (
     <div style={{ padding: "10px" }}>
       {isLoading ? <CircularProgress /> : null}
+      {error ? <Alert severity="error">{error}</Alert> : null}
       {wolframResult ? (
         <img
           src={wolframResult.imgSrc}
